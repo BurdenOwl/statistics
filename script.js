@@ -3,13 +3,15 @@ const actions = {
     stanDevPopulation: (arr, c, t) => stanDevPopulation(arr, c, t),
     stanDevSample: (arr, c, t) => stanDevSample(arr, c, t),
     zScore: (arr, c, t) => zScore(arr, c, t),
-    range: (arr, t) => Range(arr, t) 
+    range: (arr, c, t) => Range(arr, c, t),
+    varPopulation: (arr, c, t) => varPopulation(arr, c, t),
+    varSample: (arr, c, t) => varSample(arr, c, t)
 };
 
 const getSelected = () => {
     const selectElement = document.getElementById("type");
     const selectValue = selectElement.value;
-    // console.log(`Selected Value: ${selectValue}`);
+    console.log(`Selected Value: ${selectValue}`);
     return selectValue;
 }
 
@@ -32,6 +34,10 @@ const arrayFixing = () => {
     const inputElement = document.getElementById('inputValue');
     const inputValue = inputElement?.value || '';
     const inputArray = inputValue.trim().split(/\s+/);
+    if (inputArray == '') {
+        HTMLDisplay("Please input a number therein")
+        return;
+    }
 
     const residue = ",";
     const residueArray = inputArray.map(item => {
@@ -40,7 +46,7 @@ const arrayFixing = () => {
 
     const numberArray = residueArray.map(Number);
     if (numberArray.includes(NaN) == true) {
-        console.error("Please input a number"); 
+        HTMLDisplay("Please input a number therein")
         inputElement.value = numberArray.filter(item => !Number.isNaN(item));
         return;
     }
@@ -58,7 +64,7 @@ const arrayFixing = () => {
     }
 };
 
-const Range = (sortedArray, display) => {
+const Range = (sortedArray, _count, display) => {
     const range = Math.max(...sortedArray) - Math.min(...sortedArray);
     // console.log(range);
     if (display == true) {
@@ -83,19 +89,26 @@ const mean = (sortedArray, count, display) => {
 }
 
 const standDev = (sortedArray, count) => {
-    const myu = mean(sortedArray, count, false);
+    const mu = mean(sortedArray, count, false);
     const sum = sortedArray.reduce((acc, item) => {
-        return acc + (item - myu) ** 2;
+        return acc + (item - mu) ** 2;
     });
     return sum;
 }
+
+const standDevPercent = (sortedArray, count, value) => {
+    const average = mean(sortedArray, count, false)
+    const percent = `${value} or ${(100 * value) / average}%`
+    return percent;
+};
 
 const stanDevPopulation = (sortedArray, count, display) => {
     const sum = standDev(sortedArray, count);
     const total = Math.sqrt(sum / count);
     // console.log(total);
+    const percent = standDevPercent(sortedArray, count, total);
     if (display == true) {
-        HTMLDisplay(total);
+        HTMLDisplay(percent);
         return;
     };
     return total;
@@ -104,13 +117,32 @@ const stanDevPopulation = (sortedArray, count, display) => {
 const stanDevSample = (sortedArray, count, display) => {
     const sum = standDev(sortedArray, count);
     const total = Math.sqrt(sum / (count - 1 ));
+    const percent = standDevPercent(sortedArray, count, total);
     if (display == true) {
-        HTMLDisplay(total);
+        HTMLDisplay(percent);
         return;
     };
     // console.log(total);
     return total;
 };
+
+const varPopulation = (sortedArray, count, display) => {
+    const total = (stanDevPopulation(sortedArray, count, false)) ** 2;
+    if (display == true) {
+        HTMLDisplay(total);
+        return;
+    };
+    return total;
+}
+
+const varSample = (sortedArray, count, display) => {
+    const total = (stanDevSample(sortedArray, count, false)) ** 2;
+    if (display == true) {
+        HTMLDisplay(total);
+        return;
+    };
+    return total;
+}
 
 const zScore = (sortedArray, count, display) => {
     const comparedValue = sortedArray[0];
