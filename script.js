@@ -5,13 +5,17 @@ const actions = {
     zScore: (arr, c, t) => zScore(arr, c, t),
     range: (arr, c, t) => Range(arr, c, t),
     varPopulation: (arr, c, t) => varPopulation(arr, c, t),
-    varSample: (arr, c, t) => varSample(arr, c, t)
+    varSample: (arr, c, t) => varSample(arr, c, t),
+    skewSample: (arr, c, t) => skewSample(arr, c, t)
 };
 
 const getSelected = () => {
     const selectElement = document.getElementById("type");
     const selectValue = selectElement.value;
-    console.log(`Selected Value: ${selectValue}`);
+    if (selectValue == '') {
+        HTMLDisplay("Please select your method");
+        return;
+    }
     return selectValue;
 }
 
@@ -27,7 +31,12 @@ const sort = (type, numberArray) => {
 
 const HTMLDisplay = (value) => {
     const returnValue = document.getElementById("returnValue")
-    returnValue.innerHTML = `Result: ${value}`;
+    let labeller = "Result: "
+    value = String(value);
+    if (value.includes("Please" || "please")) {
+        labeller = "";
+    } 
+    returnValue.innerHTML = `${labeller + value}`;
 }
 
 const arrayFixing = () => {
@@ -50,13 +59,14 @@ const arrayFixing = () => {
         inputElement.value = numberArray.filter(item => !Number.isNaN(item));
         return;
     }
-    const count = inputArray.length;
 
     const type = getSelected();
     const sortedArray = sort(type, numberArray);
 
-    // console.log(count);
-    // console.log(sortedArray)
+    const count = sortedArray.length;
+
+    console.log(count);
+    console.log(sortedArray)
 
 
     if (actions[type]) {
@@ -80,7 +90,7 @@ const mean = (sortedArray, count, display) => {
         sum += item;
     });
     const average = sum / count;
-    // console.log(average);
+    console.log(average);
     if (display == true) {
         HTMLDisplay(average);
         return;
@@ -90,9 +100,7 @@ const mean = (sortedArray, count, display) => {
 
 const standDev = (sortedArray, count) => {
     const mu = mean(sortedArray, count, false);
-    const sum = sortedArray.reduce((acc, item) => {
-        return acc + (item - mu) ** 2;
-    });
+    const sum = sortedArray.reduce((acc, item) => acc + (item - mu) ** 2, 0);
     return sum;
 }
 
@@ -122,7 +130,7 @@ const stanDevSample = (sortedArray, count, display) => {
         HTMLDisplay(percent);
         return;
     };
-    // console.log(total);
+    console.log(total);
     return total;
 };
 
@@ -146,7 +154,7 @@ const varSample = (sortedArray, count, display) => {
 
 const zScore = (sortedArray, count, display) => {
     const comparedValue = sortedArray[0];
-    const sum = standDev(sortedArray, count);
+    const sum = stanDevPopulation(sortedArray, count);
     const average = mean(sortedArray, count, false);
     const total = (comparedValue - average) / (sum);
     if (display == true) {
@@ -154,5 +162,18 @@ const zScore = (sortedArray, count, display) => {
         return;
     };
     // console.log(total);
+    return total;
+}
+
+const skewSample = (sortedArray, count, display) => {
+    const factor = count / ((count - 1)*(count-2));
+    const stand = stanDevSample(sortedArray, count, false);
+    const mu = mean(sortedArray, count, false);
+    const sum = sortedArray.reduce((acc, item) => acc + ((item - mu) ** 3), 0);
+    const total = factor * (sum / (stand ** 3));
+    if (display == true) {
+        HTMLDisplay(total);
+        return;
+    };
     return total;
 }
