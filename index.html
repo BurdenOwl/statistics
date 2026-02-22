@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+</head>
+<body>
+
+    <select id="type">
+        <option value="mean">Mean</option>
+        <option value="stanDevPopulation">Standard Deviation (Population)</option>
+        <option value="stanDevSample">Standard Deviation (Sample)</option>
+        <option value="zScore">Z-Score</option>
+        <option value="range">Range</option>
+    </select> 
+
+    <textarea name="text" id="inputValue" placeholder="Enter list here..."></textarea>
+    <button id="generate" onclick="arrayFixing();">Solve!</button>
+    <p id="disclaimer1">#Note: Whilst using the Z-Score function, the first value in your array should be your comparsion number</p>
+    <p id="disclaimer2">Please separate your numbers with a comma and a space thereafter</p>
+    <p id="returnValue"></p>
+    <script src="script.js"></script>
+</body>
+</html>
