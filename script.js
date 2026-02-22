@@ -6,7 +6,8 @@ const actions = {
     range: (arr, c, t) => Range(arr, c, t),
     varPopulation: (arr, c, t) => varPopulation(arr, c, t),
     varSample: (arr, c, t) => varSample(arr, c, t),
-    skewSample: (arr, c, t) => skewSample(arr, c, t)
+    skewSample: (arr, c, t) => skewSample(arr, c, t),
+    skewPopulation: (arr, c, t) => skewPopulation(arr, c, t)
 };
 
 const getSelected = () => {
@@ -165,12 +166,24 @@ const zScore = (sortedArray, count, display) => {
     return total;
 }
 
+const skewPopulation = (sortedArray, count, display) => {
+    const stand = stanDevPopulation(sortedArray, count, false);
+    const mu = mean(sortedArray, count, false);
+    const thirdCentral = sortedArray.reduce((acc, item) => (acc + ((item - mu) ** 3)), 0);
+    const total = (thirdCentral / count) / (stand ** 3);
+    if (display == true) {
+        HTMLDisplay(total);
+        return;
+    };
+    return total;
+};
+
 const skewSample = (sortedArray, count, display) => {
     const factor = count / ((count - 1)*(count-2));
     const stand = stanDevSample(sortedArray, count, false);
     const mu = mean(sortedArray, count, false);
-    const sum = sortedArray.reduce((acc, item) => acc + ((item - mu) ** 3), 0);
-    const total = factor * (sum / (stand ** 3));
+    const thirdCentral = sortedArray.reduce((acc, item) => acc + ((item - mu) ** 3), 0);
+    const total = factor * (thirdCentral / (stand ** 3));
     if (display == true) {
         HTMLDisplay(total);
         return;
