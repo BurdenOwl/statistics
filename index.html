@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistics</title>
+    <style>
+        #generateMulti, #typeMulti {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -20,24 +25,28 @@
         <option value="skewSample">Skewness (Sample)</option>
     </select> 
 
+    <select id="typeMulti">
+        <option value="">...</option>
+        <option value="mean">Mean</option>
+        <option value="stanDevPopulation">Standard Deviation (Population)</option>
+        <option value="stanDevSample">Standard Deviation (Sample)</option>
+        <option value="covarPopulation">Covariance (Population)</option>
+        <option value="covarSample">Covariance (Sample)</option>
+        <option value="correlationCoPopulation">Correlation Coefficient (Population)</option>
+        <option value="correlationCoSample">Correlation Coefficient (Sample)</option>
+    </select> 
+
+    <input type="checkbox" id="multiDimensional">
+    <label for="mulitDimensional">Mulit-Dimensional</label>
+
     <textarea name="text" id="inputValue" placeholder="Enter list here..."></textarea>
-    <button id="generate" onclick="arrayFixing();">Solve!</button>
+    <button id="generate">Solve!</button>
+    <button id="generateMulti">Solve (2D)!</button>
     <p id="disclaimer1">#Note: Whilst using the Z-Score function, the first value in your array should be your comparsion number</p>
     <p id="disclaimer2">Please separate your numbers with a comma and a space thereafter</p>
     <p id="returnValue"></p>
-    <script>
-        const select = document.getElementById('type');
-
-        select.addEventListener('keydown', function(e) {
-        let typed = e.key.toLowerCase();
-        for (let i = 0; i < select.options.length; i++) {
-            if (select.options[i].text.toLowerCase().startsWith(typed)) {
-                select.selectedIndex = i;
-                break;
-            }
-        }
-        });
-    </script>
-    <script src="script.js"></script>
+    <script src="JS/script.js" type="module"></script>
+    <script src="JS/main.js" type="module"></script>
+    <script type="module" src="JS/functionality.js"></script>
 </body>
 </html>
